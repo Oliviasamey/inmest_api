@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
@@ -9,10 +10,9 @@ class Course(models.Model):
     date_modified = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
     
-    def __str__(self) -> str:
-        return super().__str__()
-    
-class IMUser(models.Model):
+    def __str__(self):
+        return f"{self.name}"
+class IMUser(AbstractUser):
     USER_TYPES = {
         "EIT": "EIT",
         "TEACHING_FELLOW": "TEACHING_FELLOW", 
@@ -24,8 +24,8 @@ class IMUser(models.Model):
     user_type = models.CharField(max_length=25, choices=USER_TYPES)
     date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
-    # def __str__(self) -> str:
-    #     return super().__str__()
+    def __str__(self) -> str:
+        return super().__str__()
     
 class Cohort(models.Model):
     name = models.CharField(max_length=1000)
@@ -53,3 +53,4 @@ class CohortMember(models.Model):
 #     def __str__(self) -> str:
 #         return super().__str__()
     
+ 
