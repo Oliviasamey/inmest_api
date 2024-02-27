@@ -1,16 +1,39 @@
 from django.db import models
 from users.models import *
 
+class Course(models.Model):
+    name = models.CharField(max_length=2000)
+    description = models.TextField(blank=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    date_modified = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.name}"
 class ClassSchedule (models.Model):
+    REPEAT_FRENQUECIES = (
+        ('DAILY', 'Daily'),
+        ('WEEKLY', 'Weekly'),
+        ('MNTHLY', 'Monthly')
+    )
+    
+    MEETING_TYPES = (
+        ('CLASS SESSION', 'Class Sessions'),
+        ('WELLNESS SESSION', 'Wellness Sessions'),
+        ('GUEST_LECTURE', 'Guest Lecture')
+    )
+    
     title =  models.CharField(max_length=500)
     description = models.TextField(blank=True, null=True)
     start_date_and_time = models.DateTimeField(auto_now_add=False, blank=True, null=True)
     end_date_and_time = models.DateTimeField(auto_now_add=False, blank=True, null=True)
     is_repeated = models.BooleanField ()
-    repeat_frequency = models.CharField(max_length=500)
-    is_active = models.BooleanField ()
+    repeat_frequency = models.CharField(max_length=50, choices = REPEAT_FRENQUECIES, null=True)
+    meeting_type = models.CharField(max_length=50, choices = MEETING_TYPES, null=True)
+    is_active = models.BooleanField (default=True)
     organizer = models.CharField(max_length=500)
+    facilitator = models.ForeignKey(IMUser, on_delete=models.CASCADE, null=True, related_name='facilator')
     cohort =  models.ForeignKey(Cohort, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null = True, related_name='course')
     venue = models.CharField(max_length=500)
 
 class ClassAttendance (models.Model):

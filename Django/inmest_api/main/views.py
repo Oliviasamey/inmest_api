@@ -1,3 +1,78 @@
 from django.shortcuts import render
+from django.http import JsonResponse, HttpResponse
+from django.views import View
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from main.models import *
+from main.serializers import *
+
 
 # Create your views here.
+@api_view (["GET"])
+def fetch_class_schedule(request):
+    #1. Retrieve frm database all class schedule
+    queryset = ClassSchedule.objects.all()
+    
+    #2. Return query set result as response
+    #2b. Transform / serialize the queryset result to json and send as response
+    
+    serializer = ClassScheduleSerializer(queryset, many=True)
+    
+    # 3. Response to the request
+    return Response({"result": serializer.data}, status.HTTP_200_OK)
+
+@api_view (["GET"])
+def create_class_schedule(request):
+    title= ()
+    description = ("description")
+    start_date_and_time = ("start_date_and_time")
+    end_date_and_time = ("end_date_and_time")
+    cohort_id = ("cohort_id")
+    venue = ("venue")
+    facilitator_id = ("facilitator_id")
+    is_repeated = ("is_repeated")
+    repeat_frequency = ("repeat_frequency")
+    course_id = ("course_id")
+    meeting_type = ("meeting_type")
+    
+    # Performing validation
+    if not title:
+        return Response({"Message": "My friend, send me title"},status.HTTP_400_BAD_REQUEST), 
+    
+    cohort = None
+    facilitator = None
+    course = None
+    
+    #Validating the existence of 
+    
+    try:
+        cohort = Cohort.objects.get(id=cohort_id)
+    except Cohort.DoesNotExist:
+        return Response({"message": "Massa, this cohort does not exist"}, status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        facilitator = IMUser.objects.get(id=facilitator_id)
+    except IMUser.DoesNotExist:
+        return Response({"message": "Massa, this user does not exist"}, status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        course = Course.objects.get(id=course_id)
+    except Course.DoesNotExist:
+        return Response({"message": "Massa, this course does not exist"}, status.HTTP_400_BAD_REQUEST)
+    
+    class_schedule = ClassSchedule.objects.create(
+        title=title,
+        description = description,
+        venue = venue,
+        is_repeated = is_repeated,
+        repeat_frequency = repeat_frequency,
+        facilitator = facilitator,
+        cohort = cohort,
+        course = course,
+        organizer = facilitator
+    )
+    class_schedule.save()
+    
+    serializer = ClassScheduleSerializer(class_schedule, many=False)
+    return Response({"message": "Schedule successfully created", "data": serializer.data}, status.HTTP_200_OK)
