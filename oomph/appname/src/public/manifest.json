@@ -1,0 +1,16 @@
+
+{
+    "name": "oomph",
+    "short_name": "oomph",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#9DC5A6",
+    "description": "For the people who shape culture, Glimpse into the future of trade.",
+    "icons": [
+        {
+            "src": "/favicon.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        }
+    ]
+}

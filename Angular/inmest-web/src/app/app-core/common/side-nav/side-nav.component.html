@@ -1,0 +1,36 @@
+<div class="side-nav">
+    <ul class="menu" style="font-family: Arial, Helvetica, sans-serif;">
+        <li>
+            <a [routerLink]="['/']" [routerLinkActive]="'menu-active'" [routerLinkActiveOptions]="{exact: true}">
+                <i class="fa fa-tachometer" aria-hidden="true"></i>
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a [routerLink]="['/attendance']" [routerLinkActive]="'menu-active'"
+                [routerLinkActiveOptions]="{exact: true}">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+                Attendance
+            </a>
+        </li>
+        <li>
+            <a [routerLink]="['/leave']" [routerLinkActive]="'menu-active'" [routerLinkActiveOptions]="{exact: true}">
+                <i class="fa fa-bed" aria-hidden="true"></i>
+                Leave
+            </a>
+        </li>
+        <li>
+            <a [routerLink]="['/analytics']" [routerLinkActive]="'menu-active'"
+                [routerLinkActiveOptions]="{exact: true}">
+                <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                Analytics
+            </a>
+        </li>
+        <li>
+            <a [routerLink]="['/users']" [routerLinkActive]="'menu-active'" [routerLinkActiveOptions]="{exact: true}">
+                <i class="fa fa-users" aria-hidden="true"></i>
+                Users
+            </a>
+        </li>
+    </ul>
+</div>

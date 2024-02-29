@@ -2,11 +2,13 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 from rest_framework import status
+from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from main.models import *
 from main.serializers import *
 from rest_framework.permissions import AllowAny
+from rest_framework import status
 
 
 # Create your views here.
@@ -32,7 +34,35 @@ def signup(request):
     serializer = UserSerializer(new_user, many=False)
     return Response({"message": "Account successfully created", "result": serializer.data})
 
-def
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def user_login(request):
+    #1 Receive inputs/data from client and validate inputs
+    username = request.data.get("username")
+    password = request.data.get("password")
+    
+    if not username or not password:
+        return Response({"message": "My friend behave yourself and send me username and / or password"}, status.HTTP_400_BAD_REQUEST)
+    
+    #2 Check user existence
+    try:
+        user = IMUser.objects.get(username=username)
+        #3 User authentification
+        auth_user = authenticate(username=username, password=password)
+        # another way of doing it: auth_user = authenticate(username, password)
+        if auth_user:
+            #4 Login user
+            login(request, user)
+            serializer = AuthSerializer(user, many=False)
+            return Response({"Result": serializer.data}, status.HTTP_200_OK)
+        
+        else:
+            return Response({"detail": "invalid credentials"}, status.HTTP_400_BAD_REQUEST)
+    
+    except IMUser.DoesNotExist:
+        return Response({"detail": "Username does not exist"}, status.HTTP_400_BAD_REQUEST)   
+    
+    
 
 def say_hello(req):
     return HttpResponse("<h1>Hello Olivia</h1>")
@@ -88,7 +118,7 @@ class QueryView(View):
     def post(self, request):
         return JsonResponse({"status":"ok"})
     
-    def signup(request):
+    def query_signup(request):
         username = request.POST["username"]
         first_name = request.POST["first_name"] 
         last_name = request.POST["last_name"]
