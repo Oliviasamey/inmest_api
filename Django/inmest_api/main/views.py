@@ -9,7 +9,7 @@ from main.serializers import *
 
 
 # Create your views here.
-@api_view (["GET"])
+@api_view(["GET"])
 def fetch_class_schedule(request):
     #1. Retrieve frm database all class schedule
     queryset = ClassSchedule.objects.all()
@@ -22,23 +22,23 @@ def fetch_class_schedule(request):
     # 3. Response to the request
     return Response({"result": serializer.data}, status.HTTP_200_OK)
 
-@api_view (["GET"])
+@api_view(["POST"])
 def create_class_schedule(request):
-    title= ()
-    description = ("description")
-    start_date_and_time = ("start_date_and_time")
-    end_date_and_time = ("end_date_and_time")
-    cohort_id = ("cohort_id")
-    venue = ("venue")
-    facilitator_id = ("facilitator_id")
-    is_repeated = ("is_repeated")
-    repeat_frequency = ("repeat_frequency")
-    course_id = ("course_id")
-    meeting_type = ("meeting_type")
+    title= request.data.get("title")
+    description = request.data.get("description")
+    start_date_and_time = request.data.get("start_date_and_time")
+    end_date_and_time = request.data.get("end_date_and_time")
+    cohort_id = request.data.get("cohort_id")
+    venue = request.data.get("venue")
+    facilitator_id = request.data.get("facilitator_id")
+    is_repeated = request.data.get("is_repeated")
+    repeat_frequency = request.data.get("repeat_frequency")
+    course_id = request.data.get("course_id")
+    meeting_type = request.data.get("meeting_type")
     
     # Performing validation
     if not title:
-        return Response({"Message": "My friend, send me title"},status.HTTP_400_BAD_REQUEST), 
+        return Response({"Message": "My friend, send me title"}, status.HTTP_400_BAD_REQUEST)
     
     cohort = None
     facilitator = None
@@ -60,6 +60,9 @@ def create_class_schedule(request):
         course = Course.objects.get(id=course_id)
     except Course.DoesNotExist:
         return Response({"message": "Massa, this course does not exist"}, status.HTTP_400_BAD_REQUEST)
+    
+        # Extracting the organizer's name from the facilitator instance
+    # organizer = facilitator_id
     
     class_schedule = ClassSchedule.objects.create(
         title=title,

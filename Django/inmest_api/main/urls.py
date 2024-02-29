@@ -9,4 +9,5 @@ urlpatterns = [
     path("schedules/fetch/", fetch_class_schedule),
     path("schedules/create/", create_class_schedule)
     
+    
 ]

@@ -1,5 +1,7 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
+from rest_framework.authtoken.models import Token
 
 # Create your models here.
 
@@ -18,6 +20,10 @@ class IMUser(AbstractUser):
     def __str__(self) -> str:
         return f"{self.first_name, self.last_name, self.user_type}"
     
+    def generate_auth_token(self):
+        token = Token.objects.create(user=self)
+        token.save()
+    
 class Cohort(models.Model):
     name = models.CharField(max_length=1000)
     description = models.TextField(blank=True, null=True)
@@ -30,7 +36,7 @@ class Cohort(models.Model):
     author = models.ForeignKey(IMUser, on_delete=models.CASCADE, related_name='cohort_author')
     
     def __str__(self):
-        return self.name
+        return f"{self.id, self.name}"
 
 
 class CohortMember(models.Model):

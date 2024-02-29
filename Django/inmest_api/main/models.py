@@ -31,10 +31,10 @@ class ClassSchedule (models.Model):
     meeting_type = models.CharField(max_length=50, choices = MEETING_TYPES, null=True)
     is_active = models.BooleanField (default=True)
     organizer = models.CharField(max_length=500)
-    facilitator = models.ForeignKey(IMUser, on_delete=models.CASCADE, null=True, related_name='facilator')
     cohort =  models.ForeignKey(Cohort, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, null = True, related_name='course')
     venue = models.CharField(max_length=500)
+    facilitator = models.ForeignKey(IMUser, on_delete=models.CASCADE, null=True, related_name='facilitator')
 
 class ClassAttendance (models.Model):
     class_schedule = models.ForeignKey(ClassSchedule, on_delete=models.CASCADE)
