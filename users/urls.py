@@ -8,5 +8,6 @@ urlpatterns = [
     # path("query/<int:query_id>/", filter_queries),
     # path("queries/", QueryView.as_view())
     path('users/signup/', signup),
-    path('users/login/', user_login)
+    path('users/login/', user_login),
+    path('users/forgot_password/', ForgotPassWordAPIView.as_view())
 ]

@@ -19,12 +19,21 @@ class IMUser(AbstractUser):
     last_name = models.CharField(max_length=500)
     user_type = models.CharField(max_length=25, choices=USER_TYPES)
     date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    unique_code = models.CharField(max_length=20, blank=True)
+    user_type = models.CharField(max_length=20, choices=USER_TYPES, default="EIT")
+    date_modified = models.DateTimeField(auto_now=True, blank = True)
+    date_created = models.DateTimeField(auto_now=True, blank = True)
+    is_blocked = models.BooleanField(default=False)
+    temporal_login_fail = models.IntegerField(blank=True, null=True)
+    permanent_login_fail = models.IntegerField(blank=True, null=True)
     
     def __str__(self) -> str:
         return f"{self.first_name, self.last_name, self.user_type}"
     
-    def generate_auth_token(self):
-        token = Token.objects.create(user=self)
+@receiver(post_save, sender=IMUser)
+def generate_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        token = Token.objects.create(user=instance)
         token.save()
     
 class Cohort(models.Model):
