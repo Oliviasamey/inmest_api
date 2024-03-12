@@ -78,13 +78,60 @@ class ForgotPassWordAPIView(APIView):
             otp_code = generate_unique_code()
         except IMUser.DoesNotExist:
             return generate_400_response("Username doesn't exist")
-        #3 send OTP code
-        user.unique_code = otp_code
-        user.save()
-        #4 Responde to the user
         return Response({"detail": "Please check youor email for an OTP code"}, status.HTTP_200_OK)
         
+class ResetPasswordAPIView(APIView):
+    permission_classes(AllowAny)
     
+    def post(self, request):
+        
+        unique_code = request.data.get("otp_code")
+        new_password = request.data.get("password")
+        username = request.data.get("username")
+        
+        
+        if not unique_code:
+            return generate_400_response("Unique code is required")
+        if username == None or username =="":
+            return generate_400_response("Email is required")
+        if new_password is None:
+            return generate_400_response("Please provide valid password")
+        try:
+            myuser = IMUser.objects.get(unique_code, username=username)
+            myuser.unique_code = ""
+            myuser.temporal_login_fail = 0
+            myuser.permanent_login_fail = 0
+            myuser.set_password
+        except IMUser.DoesNotExist:
+            return generate_400_response("Username doesn't exist")
+        
+            
+class CurrentUserProfile(APIView):
+    def get(self, request, *qrgs, **kwargs):
+        user = UserSerializer(request.user, context={'request': request})
+        return Response({'results': user.data, 'response_code':'100'}, status=200)
+    
+    def put(self, request, *args, **kwargs):
+        return
+            
+class ChangePassword(APIView):
+    #Change password when logged in
+    
+    def post(self, request, *args, **kwargs):
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new password')
+        username = request.user.username
+        if old_password is None:
+            return Response({'detail': 'Please provide old password', 'response_code': '101'},  status= 400)
+        if new_password is None:
+            return Response({'detail': 'Please provide new password', 'response_code': '100'},  status= 400)
+        if new_password == new_password:
+            return Response({'detail': 'Old and new passwords must not be the same', 'response_code': '100'},  status= 400)
+        
+        user = authenticate(username=username, password=old_password)
+        
+    def put(self, request, *args, **kwargs):
+        JsonResponse
 
 # def say_hello(req):
 #     return HttpResponse("<h1>Hello Olivia</h1>")

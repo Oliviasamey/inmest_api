@@ -2,10 +2,13 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from main.models import *
 from main.serializers import *
+import datetime
+
+from rest_framework import viewsets
 
 
 # Create your views here.
@@ -79,3 +82,10 @@ def create_class_schedule(request):
     
     serializer = ClassScheduleSerializer(class_schedule, many=False)
     return Response({"message": "Schedule successfully created", "data": serializer.data}, status.HTTP_200_OK)
+
+class QueryModeViewSet(viewsets.ModelViewSet):
+    @action(detail=False, methods=["post"])
+    def raise_query(self, request):
+        title = request.data.get("title", None)
+        description = request.data.get("description", None)
+        assigned_to = request.data.get("assigned_to", None)
